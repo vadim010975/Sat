@@ -1,22 +1,44 @@
-const { correctPhoneNumber } = require('../correctPhoneNumber');
+const { Team } = require('../Team');
 
-test.each([
-  ['+7905350000'],
-  ['+8600000000000'],
-])('test function correctPhoneNumber with %s namber', (number) => {
-  function correctBadNumber() {
-    correctPhoneNumber(number);
+class Character {
+  constructor(name, type) {
+    this.name = name;
+    this.type = type;
   }
-  expect(correctBadNumber).toThrow(new Error('Не корректно введен номер'));
+}
+
+const magIvan = new Character('Ivan', 'mag');
+const archerSergey = new Character('Sergey', 'archer');
+const swordsmanAndrey = new Character('Andrey', 'swordsman');
+const palladinOleg = new Character('Oleg', 'palladin');
+const myTeam = new Team();
+
+test('test class Team method add', () => {
+  myTeam.add(magIvan);
+  myTeam.add(archerSergey);
+  const result = myTeam.toArray();
+  const expected = [
+    { name: 'Ivan', type: 'mag' },
+    { name: 'Sergey', type: 'archer' },
+  ];
+  expect(result).toEqual(expected);
 });
 
-test.each([
-  ['9053500000', '+79053500000'],
-  ['89053500000', '+79053500000'],
-  ['8(905)3500000', '+79053500000'],
-  ['8-905-350-00-00', '+79053500000'],
-  ['+7 905 350 00 00', '+79053500000'],
-])('test function correctPhoneNumber with %s namber', (number, expected) => {
-  const result = correctPhoneNumber(number);
+test('test class Team method addAll', () => {
+  myTeam.addAll(swordsmanAndrey, palladinOleg);
+  const result = myTeam.toArray();
+  const expected = [
+    { name: 'Ivan', type: 'mag' },
+    { name: 'Sergey', type: 'archer' },
+    { name: 'Andrey', type: 'swordsman' },
+    { name: 'Oleg', type: 'palladin' },
+  ];
   expect(result).toEqual(expected);
+});
+
+test('test class Team method add again', () => {
+  function checkFunction() {
+    myTeam.add(magIvan);
+  }
+  expect(checkFunction).toThrow(new Error('Дублирование объекта'));
 });
